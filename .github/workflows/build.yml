@@ -15,6 +15,11 @@ jobs:
           distribution: temurin
           java-version: '17'
 
+      - name: Install CMake 3.22.1
+        run: |
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "cmake;3.22.1"
+
       - name: Make gradlew executable
         run: chmod +x gradlew
 
