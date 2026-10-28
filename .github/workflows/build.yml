@@ -17,15 +17,27 @@ jobs:
         run: |
           mkdir -p ~/.gradle/init.d
           cat > ~/.gradle/init.d/repos.gradle <<'EOF'
+          settingsEvaluated { settings ->
+              settings.dependencyResolutionManagement {
+                  repositories {
+                      maven { url 'https://jitpack.io' }
+                      jcenter()
+                  }
+              }
+          }
           allprojects {
               repositories {
-                  google()
-                  mavenCentral()
                   maven { url 'https://jitpack.io' }
                   jcenter()
               }
           }
           EOF
+      - name: Diagnostics
+        run: |
+          echo "=== settings.gradle ==="; cat settings.gradle
+          echo "=== app/build.gradle ==="; cat app/build.gradle
+          echo "=== usages ==="
+          grep -rn "stateview\|catloading\|floatingview\|StateView\|CatLoading\|FloatingView" app/src || true
       - run: chmod +x gradlew
       - run: ./gradlew :app:assembleDebug --no-daemon --stacktrace
       - uses: actions/upload-artifact@v4
